@@ -3,6 +3,7 @@ from codecs import open
 from os import path
 
 here = path.abspath(path.dirname(__file__))
+README = (here / "README.md").read_text()
 
 # get the dependencies and installs
 with open(path.join(here, 'requirements.txt'), encoding='utf-8') as f:
@@ -18,6 +19,8 @@ setup(
     version="0.0.1",
     license='MIT',
     packages=find_packages(exclude=("tests",)),
+    long_description=README,
+    long_description_content_type="text/markdown",
     include_package_data=True,
     author='Kailing Ding',
     install_requires=install_requires,
