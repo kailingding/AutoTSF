@@ -5,8 +5,8 @@
 import pandas as pd
 import numpy as np
 
-from data_processing_and_transform import DataProcess
-from model_training import ModelTraining
+from flows.data_processing_and_transform import DataProcess
+from flows.model_training import ModelTraining
 
 
 class Autotsf:
