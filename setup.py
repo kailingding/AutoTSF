@@ -17,11 +17,16 @@ setup(
     url='https://github.com/kailingding/Autotsf',
     version="0.0.1",
     license='MIT',
-    packages=find_packages(),
+    packages=find_packages(exclude=("tests",)),
     include_package_data=True,
     author='Kailing Ding',
     install_requires=install_requires,
     setup_requires=['numpy>=1.10', 'scipy>=0.17'],
     dependency_links=dependency_links,
-    author_email='markdingkl@gmail.com'
+    author_email='markdingkl@gmail.com',
+    classifiers=[
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.6",
+    ],
 )
