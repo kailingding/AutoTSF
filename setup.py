@@ -2,11 +2,13 @@ from setuptools import setup, find_packages
 from codecs import open
 from os import path
 
-here = path.abspath(path.dirname(__file__))
-README = (here / "README.md").read_text()
+HERE = path.abspath(path.dirname(__file__))
+with open(path.join(HERE, 'README.md'), encoding='utf-8') as f:
+    README = f.read()
+VERSION = '0.0.1'
 
 # get the dependencies and installs
-with open(path.join(here, 'requirements.txt'), encoding='utf-8') as f:
+with open(path.join(HERE, 'requirements.txt'), encoding='utf-8') as f:
     all_reqs = f.read().split('\n')
 
 install_requires = [x.strip() for x in all_reqs if 'git+' not in x]
@@ -16,7 +18,7 @@ setup(
     name='Autotsf',
     description='Automated Time-Series Forecasting',
     url='https://github.com/kailingding/Autotsf',
-    version="0.0.1",
+    version=VERSION,
     license='MIT',
     packages=find_packages(exclude=("tests",)),
     long_description=README,
