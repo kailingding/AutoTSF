@@ -1,4 +1,4 @@
-# Autotsf
+# AutoTSF
 
 Automated time-series forecast pipeline with state-of-art machine learning and deep learning algorithm. 🚀🚀🚀
 
