@@ -24,7 +24,7 @@ pred_df = auto_tsf.predict(num_steps=7)   # one week forecast
 
 * **Kailing Ding** - [Github](https://github.com/kailingding)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/kailingding/Autotsf/graphs/contributors) who participated in this project.
 
 ## License
 
