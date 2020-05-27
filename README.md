@@ -4,7 +4,7 @@ Automated time-series forecast pipeline with state-of-art machine learning and d
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install AutoTSF.
 
 ```bash
 $ pip install autotsf
