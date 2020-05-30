@@ -16,13 +16,17 @@ $ pip install autotsf
 from autotsf import AutoTSF               # Import
 
 auto_tsf = AutoTSF()                      # Initialization
-auto_tsf.run_pipelie(data)                # training
+auto_tsf.train(data)                      # automated feature engineering and model training
 pred_df = auto_tsf.predict(num_steps=7)   # one week forecast
 ```
 
 ## Authors
 
 * **Kailing Ding** - [Github](https://github.com/kailingding)
+* **Yuxuan Fan** - [Github](https://github.com/991231/)
+* **Jerry Chan**
+* **Shen Hu**
+* **Jeffrey Chen**
 
 See also the list of [contributors](https://github.com/kailingding/Autotsf/graphs/contributors) who participated in this project.
 
