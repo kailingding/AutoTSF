@@ -15,6 +15,9 @@ $ pip install autotsf
 ```python
 from autotsf import AutoTSF                         # Import
 
+import pandas as pd
+data = pd.read_csv('/Users/kailing/Desktop/sample_data_1.csv', parse_dates=['datetime'])
+
 auto_tsf = AutoTSF()                                # Initialization
 auto_tsf.train(data)                                # automated feature engineering and model training
 
