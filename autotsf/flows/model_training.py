@@ -8,7 +8,7 @@ import numpy as np
 
 from ..models.lstm import LSTM_model
 from ..models.lgbm import LGBM_model
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, Ridge
 
 # TODO:
 #   1. Return inverse scaled differenced yhat
@@ -45,7 +45,7 @@ class ModelTraining:
             score = model.evaluate_model(X, y)['R2']
             if score > best_score:
                 self.best_model_ = model
-        # self.best_model_ = LinearRegression()
+        # self.best_model_ = Ridge()
         # self.best_model_.fit(X, y)
 
     def _ind_predict(self, new_row):
