@@ -2,24 +2,21 @@ import numpy as np
 import pandas as pd
 from datetime import timedelta
 
-from data_preprocessing.calenderTrans import CalenderTransformer
-from data_preprocessing.salesHistoryTrans import SalesHistoryTransformer
+from ..data_preprocessing.calenderTrans import CalenderTransformer
+from ..data_preprocessing.salesHistoryTrans import SalesHistoryTransformer
 
 from sklearn.preprocessing import StandardScaler
 
 '''
 TODO:
-    1. when creating new rows, use differenced signal or no
-        because the forecasted  one ddoesn't have a y  (i.e. can't diff)
-        (temp solu: use last day's y)
-    2. loss of data, i.e. if lag = 365, first 365 will be lost
-    3. Do we save raw_df as class attributes
+    1. loss of data, i.e. if lag = 365, first 365 will be lost
+    2. Do we save raw_df as class attributes
 '''
 
 
 class DataProcess:
     '''
-        1. Preprocess data integrated with following column transfomers
+        1. Preprocess data integrated with following column transformers
                 a. SalesHistoryTransformer
                 b. CalenderTransformer
                 c. normalize data
@@ -32,10 +29,6 @@ class DataProcess:
         self.max_lag = None
 
     def scale(self, X):
-        '''
-            Normalize signal
-        '''
-
         # fit the normalizer with X
         self.scaler.fit(X)
         # scale train
@@ -44,30 +37,30 @@ class DataProcess:
         return X_scaled
 
     def inverse_scale(self, yhat_scaled):
-        '''
-        Inverse transform normalized_X back to X with original scale
-        '''
+        # Inverse transform normalized_X back to X with original scale
         if isinstance(yhat_scaled, float):
             yhat_scaled = np.array([yhat_scaled])
 
         yhat = self.scaler.inverse_transform(yhat_scaled)
+        
+        # flatten yhat
+        yhat = np.array(yhat).flatten()
 
-        return yhat
+        # return a single float
+        return yhat[0]
 
     def difference(self, arr, interval=1):
-        '''
-            Differencing arr
-        '''
         diff = list()
         for i in range(interval, len(arr)):
             value = arr[i] - arr[i - interval]
             diff.append(value)
         # diff value at the last index
-        diff.append(np.mean(diff))
+        diff = [np.mean(diff)] + diff
         return diff
 
     def inverse_difference(self, yhat, arr, interval=1):
-        return yhat + arr[-interval]
+        # return float
+        return yhat + arr[-interval-1]
 
     def preprocess_data(self, df):
         '''
@@ -97,12 +90,14 @@ class DataProcess:
         calender_df = CalenderTransformer().transform(df[['datetime']])
 
         # TODO: 2
-        df = pd.concat([df, sales_lag_df, calender_df], axis=1).iloc[self.max_lag:, :].copy()
+        X_scaled = pd.concat([sales_lag_df, calender_df], axis=1).iloc[self.max_lag:, :].values
+        y_scaled = df['diff_signal_scaled'].iloc[self.max_lag:].values
 
-        # split features and label
-        df.drop(['datetime', 'signal', 'diff_signal'], axis=1, inplace=True)
-        X_scaled = df.drop('diff_signal_scaled', axis=1).values
-        y_scaled = df['diff_signal_scaled'].values
+        # split the last row with the rest
+        # because last row is for forecasting
+        X_scaled = X_scaled[:-1, :]
+        self.X_scaled_forecast = X_scaled[-1, :]
+        y_scaled = y_scaled[1:]
 
         return X_scaled, y_scaled
 
@@ -114,41 +109,36 @@ class DataProcess:
         day = np.datetime64(self.raw_df['datetime'].iloc[-1] + timedelta(days=1))
 
         last_row_ix = self.raw_df.index[-1]
-        # TODO: 1
         if yhat_scaled:
             # inverse scale and inverse difference yhat
             # replace the temp one
-            yhat_diff = self.inverse_scale(yhat_scaled)[0]
+            yhat_diff = self.inverse_scale(yhat_scaled)
             yhat = self.inverse_difference(yhat_diff, self.raw_df['signal'].values)
             self.raw_df.loc[last_row_ix, 'signal'] = yhat
             self.raw_df.loc[last_row_ix, 'diff_signal'] = yhat_diff
             self.raw_df.loc[last_row_ix, 'diff_signal_scaled'] = yhat_scaled
+
+            # create new features
+            new_calender_df = CalenderTransformer().transform(
+                self.raw_df[['datetime']])
+            new_sales_lag_df, _ = SalesHistoryTransformer().transform(
+                self.raw_df[['diff_signal_scaled']])
+            new_row = pd.concat([new_sales_lag_df, new_calender_df],
+                                axis=1).iloc[-1, :].copy()
+            new_row = new_row.values
         else:
-            # create placeholder for signal on the first step forecast
-            yhat = self.raw_df.loc[last_row_ix, 'signal']
-            yhat_diff = self.raw_df.loc[last_row_ix, 'diff_signal']
-            yhat_scaled = self.raw_df.loc[last_row_ix, 'diff_signal_scaled']
+            new_row = self.X_scaled_forecast
 
-        # append new signal
-        # TODO: DO we need to create a new df for new_row to append
-        self.raw_df = self.raw_df.append({"datetime": day,
-                                          "signal": yhat,
-                                          "diff_signal": yhat_diff,
-                                          "diff_signal_scaled": yhat_scaled},
-                                         ignore_index=True)
+        # create a new row for prediction
+        self.raw_df = self.raw_df.append({"datetime": day}, ignore_index=True)
+        return new_row, day
 
-        # create new features
-        new_calender_df = CalenderTransformer().transform(
-            self.raw_df[['datetime']])
-        new_sales_lag_df, _ = SalesHistoryTransformer().transform(
-            self.raw_df[['diff_signal_scaled']])
-        new_row = pd.concat([new_sales_lag_df, new_calender_df],
-                            axis=1).iloc[-1, :].copy()
-        return new_row.values, yhat, day
+    def reset(self, num_step):
+        self.raw_df = self.raw_df.iloc[:-num_step, :]
 
 
 if __name__ == "__main__":
     calenderTrans = DataProcess()
-    ca_0 = pd.read_csv("../sample_data/data/CA_0.csv", parse_dates=['datetime'])
+    ca_0 = pd.read_csv("../sample_data/data/sample_data_1.csv", parse_dates=['datetime'])
     calenderTrans.preprocess_data(ca_0)
     print(calenderTrans.create_features(0.2))
