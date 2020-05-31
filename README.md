@@ -13,11 +13,15 @@ $ pip install autotsf
 ## Getting Started 
 
 ```python
-from autotsf import AutoTSF               # Import
+from autotsf import AutoTSF                         # Import
 
-auto_tsf = AutoTSF()                      # Initialization
-auto_tsf.train(data)                      # automated feature engineering and model training
-pred_df = auto_tsf.predict(num_steps=7)   # one week forecast
+import pandas as pd
+data = pd.read_csv('/Users/kailing/Desktop/sample_data_1.csv', parse_dates=['datetime'])
+
+auto_tsf = AutoTSF()                                # Initialization
+auto_tsf.train(data)                                # automated feature engineering and model training
+
+pred_df = auto_tsf.forecast(num_step_forecast=7)    # one week forecast
 ```
 
 ## Authors
