@@ -14,7 +14,7 @@ class SalesHistoryTransformer:
     def __init__(self):
         # if size of X * 0.3 > rolling_size, then create that new feature
         self.threshold_for_rolling = 0.3
-        self.lags = list(np.arange(1, 15))
+        self.lags = list(np.arange(1, 15)) # 14 days of lag
         self.lags.extend([28, 182, 364])
         self.roll_groups = [7, 14, 28, 364]
 
@@ -67,10 +67,10 @@ class SalesHistoryTransformer:
             raise Exception("Insufficient data size")
 
         # add lag features
-        timesteps = 0
+        max_lag = 0
         for lag in self.lags:
             if X_len * self.threshold_for_rolling > lag:
-                timesteps = lag
+                max_lag = lag
                 _X[f'{lag}_days_ago'] = _X[signal_col].shift(lag, fill_value=0)
 
         # add roll means
@@ -88,4 +88,8 @@ class SalesHistoryTransformer:
 
         # drop signal column because it is a label, not a feature
         _X.drop(signal_col, axis=1, inplace=True)
-        return _X, timesteps
+        return _X, max_lag
+
+if __name__ == "__main__":
+    salesTransformer = SalesHistoryTransformer()
+    salesTransformer.transform(np.array([1,5,2,34,10]))

@@ -9,7 +9,7 @@
 # ==========================
 
 '''
-Seasonality test using periodogram: the seasonality 
+Seasonality tests using periodogram: the seasonality
 '''
 
 import pandas as pd
@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 
 
 '''
-Use periodogram to test seasonality. The seasonality is most pronounced at the peak frequencies.
+Use periodogram to tests seasonality. The seasonality is most pronounced at the peak frequencies.
 X is an n*2 dataframe with one datetime column and one data column
 '''
 def testSeasonality(X):

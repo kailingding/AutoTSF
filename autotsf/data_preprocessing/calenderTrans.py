@@ -100,5 +100,5 @@ class CalenderTransformer:
 
 if __name__ == "__main__":
     calenderTrans = CalenderTransformer()
-    ca_0 = pd.read_csv("../sample_data/data/CA_0.csv", parse_dates=['datetime'])
+    ca_0 = pd.read_csv("../sample_data/data/sample_data_1.csv", parse_dates=['datetime'])
     print(calenderTrans.transform(ca_0).columns)

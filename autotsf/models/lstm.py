@@ -1,19 +1,20 @@
 # LSTM
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import pandas as pd
 from .models import ModelInterface
 from sklearn.metrics import mean_squared_error
 from hyperopt import fmin, hp, Trials, tpe, STATUS_OK
 import numpy as np
 from functools import partial
-from keras.layers import Dense, Concatenate, Lambda, Input, Concatenate, Flatten
+from keras.layers import Dense, Lambda, Input, Concatenate, Flatten
 from keras.models import Model, load_model
 from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping
 from keras.layers import LSTM
 from hyperopt.pyll.base import scope
 import warnings
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 warnings.filterwarnings("ignore")
 
 # TODO:
@@ -115,10 +116,10 @@ class LSTM_model(ModelInterface):
         X = X.reshape(X.shape[0], 1, X.shape[1])
         best = fmin(lambda params: self.objective(params, X, y), space,
                     algo=partial(tpe.suggest, n_startup_jobs=15),
-                    max_evals=self.tuning_params["max_evals"], trials=ts)
+                    max_evals=self.tuning_params["max_evals"], verbose=0, trials=ts)
         self.best_param = best
         self.best_param['activation'] = ['relu', 'tanh'][self.best_param['activation']]
-        print('best: {}'.format(self.best_param))
+        # print('best: {}'.format(self.best_param))
 
         self.is_tuned = True
 
@@ -151,7 +152,7 @@ class LSTM_model(ModelInterface):
         correlation_matrix = np.corrcoef(predictions, y)
         correlation_xy = correlation_matrix[0, 1]
         r_squared = correlation_xy**2
-        return {"RMSE": rmse, "R_squared": r_squared}
+        return {"RMSE": rmse, "R2": r_squared}
 
     def predict(self, X):
         # if not self.is_model_trained:
@@ -169,7 +170,7 @@ class LSTM_model(ModelInterface):
         params.update(self.net_params)
         self.model = self.get_model(params)
         X = X.reshape(X.shape[0], 1, X.shape[1])
-        hist = self.model.fit(X, y, epochs=self.train_params["train_epochs"])
+        hist = self.model.fit(X, y, verbose=0, epochs=self.train_params["train_epochs"])
         self.is_trained = True
         return hist
 

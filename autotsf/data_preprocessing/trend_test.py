@@ -14,7 +14,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
     
 
     
-'''Naive test using the statsmodels.api.tsa.seasonal_decompose
+'''Naive tests using the statsmodels.api.tsa.seasonal_decompose
 X is an n*2 dataframe with one datetime column and one data column'''    
 def naiveTest(X):
     data = X.set_index(["datetime"])
