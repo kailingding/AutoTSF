@@ -35,6 +35,7 @@ env/
 
 # mac DS_Store
 .DS_Store
+\.DS_Store
 
 # ideas
 .idea/
