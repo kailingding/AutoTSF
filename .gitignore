@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# testing
+**/[Tt]est*
+
 # Distribution / packaging
 .Python
 build/
