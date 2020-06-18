@@ -1,4 +1,4 @@
-# AutoTSF
+# AutoTSF (version 0.1.0)
 
 Automated time-series forecast pipeline with state-of-art machine learning and deep learning algorithm. 🚀🚀🚀
 
