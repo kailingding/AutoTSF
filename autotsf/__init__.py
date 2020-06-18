@@ -1,1 +1,1 @@
-from autotsf.flows.autotsf import AutoTSF
+from .flows.autotsf import AutoTSF

@@ -5,7 +5,7 @@ from os import path
 HERE = path.abspath(path.dirname(__file__))
 with open(path.join(HERE, 'README.md'), encoding='utf-8') as f:
     README = f.read()
-VERSION = '0.0.6'
+VERSION = '0.0.8'
 
 # get the dependencies and installs
 with open(path.join(HERE, 'requirements.txt'), encoding='utf-8') as f:

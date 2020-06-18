@@ -1,6 +1,7 @@
 # dev_requirements.txt
 pandas==1.0.3
 numpy==1.18.2
-scikit-learn==0.22.2.post1
+scikit-learn==0.23.1
 hyperopt==0.2.2
-keras==2.3.0
+keras==2.3.1
+lightgbm==2.3.2
